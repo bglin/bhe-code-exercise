@@ -53,7 +53,6 @@ func (s Sieve) GetPrimes(n int64) []int64 {
 	// keep track of primes with slice of bools
 	isPrime := make([]bool, n+1)
 
-	// seed with input
 	for i := range isPrime {
 		isPrime[i] = true
 	}
@@ -62,7 +61,6 @@ func (s Sieve) GetPrimes(n int64) []int64 {
 	isPrime[1] = false
 
 	// iterate through n = 2 to the square root of n and mark multiples of n as non prime
-
 	for num := int64(2); num*num <= n; num++ {
 		if isPrime[num] {
 			for i := num * num; i <= n; i += num {
@@ -70,7 +68,6 @@ func (s Sieve) GetPrimes(n int64) []int64 {
 			}
 		}
 	}
-	// return slice of
 	result := make([]int64, 0)
 
 	for i, val := range isPrime {
