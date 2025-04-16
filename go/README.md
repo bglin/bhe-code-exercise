@@ -24,7 +24,7 @@ type Sieve struct {
 func (s Sieve) NthPrime(n int64) (int64, error) {...}
 
 
-func (s Sieve) GetPrimes(n int64) []int64 {
+func (s Sieve) GetPrimes(n int64) []int64 {...}
 
 
 ```
