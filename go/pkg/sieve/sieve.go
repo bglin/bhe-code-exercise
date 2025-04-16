@@ -26,7 +26,7 @@ func (s Sieve) estimateLimit(n int64) int64 {
 
 }
 
-// NthPrime returns the Nth prime number where 0 > = n <= estimatedLimit
+// NthPrime returns the Nth prime number where  n >=0
 func (s Sieve) NthPrime(n int64) (int64, error) {
 
 	if n < 0 {
