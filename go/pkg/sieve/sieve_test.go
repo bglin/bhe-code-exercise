@@ -2,17 +2,22 @@ package sieve_test
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math/big"
+	"ssse-exercise-sieve/pkg/cache"
 	sv "ssse-exercise-sieve/pkg/sieve"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNthPrime(t *testing.T) {
 	logger := log.Default()
-	sieve := sv.NewSieve(logger)
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
+
+	fmt.Println("starting tests")
 
 	tests := []struct {
 		name     string // Added name field for the test case
@@ -45,7 +50,7 @@ func TestNthPrime(t *testing.T) {
 
 func FuzzNthPrime(f *testing.F) {
 	logger := log.Default()
-	sieve := sv.NewSieve(logger)
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
 
 	f.Fuzz(func(t *testing.T, n int64) {
 		result, err := sieve.NthPrime(n)
@@ -56,4 +61,32 @@ func FuzzNthPrime(f *testing.F) {
 			t.Errorf("the sieve produced a non-prime number at index %d", n)
 		}
 	})
+}
+
+func TestCachedPrimes(t *testing.T) {
+	logger := log.Default()
+
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
+
+	firstCall := func() {
+		defer duration(track("Call to Nth prime without cached value"))
+		sieve.NthPrime(10000000)
+
+	}
+
+	secondCall := func() {
+		defer duration(track("Call to Nth prime with cached value"))
+		sieve.NthPrime(10000000)
+	}
+
+	firstCall()
+	secondCall()
+}
+
+func track(msg string) (string, time.Time) {
+	return msg, time.Now()
+}
+
+func duration(msg string, start time.Time) {
+	log.Printf("%v: %v\n", msg, time.Since(start))
 }
