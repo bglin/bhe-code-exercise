@@ -27,12 +27,12 @@ func main() {
 
 	sieveProvider := sieve.NewSieve(logger)
 
-	app := NewApp(logger, sieveProvider)
+	app := NewApp(logger, &sieveProvider)
 
 	if app == nil {
 		logger.Fatal("App creation failed")
 	}
-	logger.Print()
+
 	n := int64(19)
 	primeNum, err := app.SieveProvider.NthPrime(n)
 

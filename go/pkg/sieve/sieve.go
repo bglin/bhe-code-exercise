@@ -6,14 +6,16 @@ import (
 )
 
 type Sieve struct {
-	logger *log.Logger
+	logger      *log.Logger
+	primesCache []int64
 }
 
 func NewSieve(log *log.Logger) Sieve {
-	return Sieve{logger: log}
+	primesCache := make([]int64, 0)
+	return Sieve{logger: log, primesCache: primesCache}
 }
 
-func (s Sieve) estimateLimit(n int64) int64 {
+func (s *Sieve) estimateLimit(n int64) int64 {
 
 	if n < 10 {
 		s.logger.Print(" n is small < 10. hardcoding limit to 20")
@@ -26,13 +28,18 @@ func (s Sieve) estimateLimit(n int64) int64 {
 
 }
 
-// NthPrime returns the Nth prime number where  n >=0
-func (s Sieve) NthPrime(n int64) (int64, error) {
+// NthPrime returns the Nth prime number where  n >= 0
+func (s *Sieve) NthPrime(n int64) (int64, error) {
 
 	if n < 0 {
 		s.logger.Printf("%v", ErrorInvalidInput)
 
 		return 0, ErrorInvalidInput
+	}
+
+	if int64(len(s.primesCache)) > n {
+		s.logger.Printf("fetching %dth prime from cache", n)
+
 	}
 	limit := s.estimateLimit(n)
 
@@ -48,7 +55,7 @@ func (s Sieve) NthPrime(n int64) (int64, error) {
 
 }
 
-func (s Sieve) GetPrimes(n int64) []int64 {
+func (s *Sieve) GetPrimes(n int64) []int64 {
 
 	// keep track of primes with slice of bools
 	isPrime := make([]bool, n+1)
@@ -75,6 +82,6 @@ func (s Sieve) GetPrimes(n int64) []int64 {
 			result = append(result, int64(i))
 		}
 	}
+	s.primesCache = result
 	return result
-
 }
