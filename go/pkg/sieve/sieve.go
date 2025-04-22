@@ -39,6 +39,7 @@ func (s *Sieve) NthPrime(n int64) (int64, error) {
 
 	if int64(len(s.primesCache)) > n {
 		s.logger.Printf("fetching %dth prime from cache", n)
+		return s.primesCache[n], nil
 
 	}
 	limit := s.estimateLimit(n)
