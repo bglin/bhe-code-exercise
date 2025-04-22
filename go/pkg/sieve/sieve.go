@@ -5,14 +5,18 @@ import (
 	"math"
 )
 
-type Sieve struct {
-	logger      *log.Logger
-	primesCache []int64
+type PrimesCache interface {
+	Get(n int64) (int64, bool)
+	Set(primes []int64)
 }
 
-func NewSieve(log *log.Logger) Sieve {
-	primesCache := make([]int64, 0)
-	return Sieve{logger: log, primesCache: primesCache}
+type Sieve struct {
+	logger *log.Logger
+	cache  PrimesCache
+}
+
+func NewSieve(log *log.Logger, cache PrimesCache) Sieve {
+	return Sieve{logger: log, cache: cache}
 }
 
 func (s *Sieve) estimateLimit(n int64) int64 {
@@ -37,11 +41,11 @@ func (s *Sieve) NthPrime(n int64) (int64, error) {
 		return 0, ErrorInvalidInput
 	}
 
-	if int64(len(s.primesCache)) > n {
+	if prime, ok := s.cache.Get(n); ok {
 		s.logger.Printf("fetching %dth prime from cache", n)
-		return s.primesCache[n], nil
-
+		return prime, nil
 	}
+
 	limit := s.estimateLimit(n)
 
 	for {
@@ -83,6 +87,6 @@ func (s *Sieve) GetPrimes(n int64) []int64 {
 			result = append(result, int64(i))
 		}
 	}
-	s.primesCache = result
+	s.cache.Set(result)
 	return result
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"ssse-exercise-sieve/pkg/cache"
 	sv "ssse-exercise-sieve/pkg/sieve"
 	"testing"
 	"time"
@@ -14,7 +15,7 @@ import (
 
 func TestNthPrime(t *testing.T) {
 	logger := log.Default()
-	sieve := sv.NewSieve(logger)
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
 
 	fmt.Println("starting tests")
 
@@ -49,7 +50,7 @@ func TestNthPrime(t *testing.T) {
 
 func FuzzNthPrime(f *testing.F) {
 	logger := log.Default()
-	sieve := sv.NewSieve(logger)
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
 
 	f.Fuzz(func(t *testing.T, n int64) {
 		result, err := sieve.NthPrime(n)
@@ -65,7 +66,7 @@ func FuzzNthPrime(f *testing.F) {
 func TestCachedPrimes(t *testing.T) {
 	logger := log.Default()
 
-	sieve := sv.NewSieve(logger)
+	sieve := sv.NewSieve(logger, cache.NewMemoryCache())
 
 	firstCall := func() {
 		defer duration(track("Call to Nth prime without cached value"))

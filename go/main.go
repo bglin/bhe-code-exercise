@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"ssse-exercise-sieve/pkg/cache"
 	"ssse-exercise-sieve/pkg/sieve"
 )
 
@@ -25,7 +26,8 @@ func main() {
 	logger.Printf("intializing app instance")
 	defer logger.Print("finished calculation of Nth prime number")
 
-	sieveProvider := sieve.NewSieve(logger)
+	primesCache := cache.NewMemoryCache()
+	sieveProvider := sieve.NewSieve(logger, primesCache)
 
 	app := NewApp(logger, &sieveProvider)
 
